@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>产品报价表</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#f5f5f5;color:#111;min-height:100vh}
+header{background:#fff;border-bottom:1px solid #e5e5e5;padding:0 2rem;position:sticky;top:0;z-index:100}
+.header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{font-size:1.1rem;font-weight:600;letter-spacing:-0.02em}
+.logo span{color:#2563eb}
+.header-meta{font-size:0.78rem;color:#888}
+.hero-band{background:#111;color:#fff;padding:2.5rem 2rem}
+.hero-inner{max-width:1200px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;flex-wrap:wrap}
+.hero-title{font-size:1.8rem;font-weight:600;letter-spacing:-0.03em;line-height:1.2}
+.hero-title span{color:#60a5fa}
+.hero-sub{font-size:0.85rem;color:#aaa;margin-top:0.4rem}
+.hero-stats{display:flex;gap:2rem}
+.hstat-num{font-size:1.6rem;font-weight:600;line-height:1}
+.hstat-label{font-size:0.72rem;color:#aaa;margin-top:0.2rem;text-transform:uppercase;letter-spacing:0.06em}
+.controls{background:#fff;border-bottom:1px solid #e5e5e5;padding:1rem 2rem;position:sticky;top:60px;z-index:99}
+.controls-inner{max-width:1200px;margin:0 auto;display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
+.search-wrap{position:relative;flex:1;min-width:200px}
+.search-wrap input{width:100%;padding:0.55rem 1rem 0.55rem 2.4rem;border:1px solid #e5e5e5;border-radius:8px;font-size:0.88rem;font-family:inherit;outline:none;background:#f9f9f9;transition:border-color 0.15s}
+.search-wrap input:focus{border-color:#2563eb;background:#fff}
+.search-icon{position:absolute;left:0.75rem;top:50%;transform:translateY(-50%);color:#aaa;font-size:0.9rem}
+.filters{display:flex;gap:0.5rem;flex-wrap:wrap}
+.filter-btn{padding:0.45rem 1rem;border:1px solid #e5e5e5;border-radius:6px;background:#fff;font-size:0.78rem;cursor:pointer;font-family:inherit;color:#555;transition:all 0.15s;white-space:nowrap}
+.filter-btn:hover{border-color:#111;color:#111}
+.filter-btn.active{background:#111;color:#fff;border-color:#111}
+.sort-select{padding:0.45rem 0.75rem;border:1px solid #e5e5e5;border-radius:6px;font-size:0.78rem;font-family:inherit;color:#555;outline:none;cursor:pointer;background:#fff}
+.result-count{margin-left:auto;font-size:0.78rem;color:#888;white-space:nowrap}
+.table-wrap{max-width:1200px;margin:1.5rem auto;padding:0 2rem}
+.table-card{background:#fff;border-radius:12px;border:1px solid #e5e5e5;overflow:hidden}
+table{width:100%;border-collapse:collapse}
+thead tr{border-bottom:1px solid #e5e5e5}
+thead th{padding:0.85rem 1rem;text-align:left;font-size:0.72rem;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.07em;background:#fafafa;white-space:nowrap}
+tbody tr{border-bottom:1px solid #f0f0f0;transition:background 0.1s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:#f9fafb}
+td{padding:0.9rem 1rem;font-size:0.875rem;vertical-align:middle}
+td:first-child{text-align:center;color:#ccc;font-size:0.78rem;width:48px}
+.td-name{font-weight:500;color:#111}
+.td-name small{display:block;font-weight:400;color:#888;font-size:0.75rem;margin-top:0.1rem}
+.tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:0.7rem;font-weight:500;white-space:nowrap}
+.tag-A{background:#eff6ff;color:#1d4ed8}
+.tag-B{background:#f0fdf4;color:#166534}
+.tag-C{background:#fff7ed;color:#9a3412}
+.tag-D{background:#fdf4ff;color:#7e22ce}
+.price{font-weight:600;font-size:0.95rem;color:#111}
+.price-note{font-size:0.72rem;color:#aaa;font-weight:400}
+.stock{display:inline-flex;align-items:center;gap:0.3rem;font-size:0.78rem}
+.dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.dot-in{background:#22c55e}
+.dot-low{background:#f59e0b}
+.dot-out{background:#ef4444}
+.moq{color:#888;font-size:0.82rem}
+.btn-quote{padding:0.35rem 0.8rem;background:#2563eb;color:#fff;border:none;border-radius:6px;font-size:0.75rem;font-family:inherit;cursor:pointer;transition:background 0.15s;white-space:nowrap}
+.btn-quote:hover{background:#1d4ed8}
+.empty{text-align:center;padding:4rem 2rem;color:#aaa}
+.empty-icon{font-size:2.5rem;margin-bottom:0.75rem}
+.page-footer{max-width:1200px;margin:0 auto;padding:1.5rem 2rem 3rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.footer-note{font-size:0.75rem;color:#aaa;line-height:1.8}
+.footer-contact{font-size:0.78rem;color:#555}
+.footer-contact a{color:#2563eb;text-decoration:none}
+.toast{position:fixed;bottom:2rem;right:2rem;background:#111;color:#fff;padding:0.75rem 1.25rem;border-radius:8px;font-size:0.85rem;opacity:0;transform:translateY(8px);transition:all 0.25s;pointer-events:none;z-index:999}
+.toast.show{opacity:1;transform:translateY(0)}
+@media(max-width:768px){
+  .hero-stats{display:none}
+  .table-wrap{padding:0 1rem}
+  .controls{padding:0.75rem 1rem}
+  .hero-band{padding:1.5rem 1rem}
+  td:nth-child(4),th:nth-child(4),td:nth-child(6),th:nth-child(6){display:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">你的公司名称 <span>·</span> 产品报价</div>
+    <div class="header-meta">更新日期：2024年12月 · 价格含税</div>
+  </div>
+</header>
+
+<div class="hero-band">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-title">产品报价表<br><span>2024年度</span></div>
+      <div class="hero-sub">所有价格均为人民币含税价，最终以合同为准</div>
+    </div>
+    <div class="hero-stats">
+      <div class="hstat">
+        <div class="hstat-num" id="stat-total">—</div>
+        <div class="hstat-label">在售产品</div>
+      </div>
+      <div class="hstat">
+        <div class="hstat-num">4</div>
+        <div class="hstat-label">产品类别</div>
+      </div>
+      <div class="hstat">
+        <div class="hstat-num">7天</div>
+        <div class="hstat-label">交货周期</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="controls">
+  <div class="controls-inner">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search" placeholder="搜索产品名称、型号…">
+    </div>
+    <div class="filters">
+      <button class="filter-btn active" data-cat="全部">全部</button>
+      <button class="filter-btn" data-cat="A类">A类</button>
+      <button class="filter-btn" data-cat="B类">B类</button>
+      <button class="filter-btn" data-cat="C类">C类</button>
+      <button class="filter-btn" data-cat="D类">D类</button>
+    </div>
+    <select class="sort-select" id="sort-select">
+      <option value="default">默认排序</option>
+      <option value="price-asc">价格从低到高</option>
+      <option value="price-desc">价格从高到低</option>
+      <option value="name">按名称</option>
+    </select>
+    <div class="result-count" id="result-count"></div>
+  </div>
+</div>
+
+<div class="table-wrap">
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>产品名称</th>
+          <th>类别</th>
+          <th>散件单价</th>
+          <th>批量单价</th>
+          <th>大批单价</th>
+          <th>最低起订</th>
+          <th>库存</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <div class="empty" id="empty" style="display:none">
+      <div class="empty-icon">📭</div>
+      <p>没有找到匹配的产品，请换个关键词试试</p>
+    </div>
+  </div>
+</div>
+
+<div class="page-footer">
+  <div class="footer-note">
+    · 散件单价：1–9件 &nbsp;·&nbsp; 批量单价：10–49件 &nbsp;·&nbsp; 大批单价：50件以上<br>
+    · 价格如有变动恕不另行通知，以最新报价单为准 &nbsp;·&nbsp; 支持定制，请联系销售
+  </div>
+  <div class="footer-contact">
+    咨询热线：<a href="tel:400-000-0000">400-000-0000</a> &nbsp;|&nbsp;
+    邮箱：<a href="mailto:sales@yourcompany.com">sales@yourcompany.com</a>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const products = [
+  {id:'P001',name:'高强度铝合金支架',spec:'400×200×50mm / 银色',cat:'A类',p1:128,p2:98,p3:75,moq:1,stock:'in'},
+  {id:'P002',name:'精密轴承组件',spec:'型号 6204-2RS / 内径20mm',cat:'A类',p1:45,p2:32,p3:25,moq:10,stock:'in'},
+  {id:'P003',name:'工业密封垫片',spec:'橡胶材质 / Φ80mm',cat:'A类',p1:8,p2:5.5,p3:3.8,moq:50,stock:'in'},
+  {id:'P004',name:'不锈钢螺栓套件',spec:'M8×50 / 304不锈钢',cat:'A类',p1:12,p2:8,p3:5.5,moq:100,stock:'low'},
+  {id:'P005',name:'液压缓冲器',spec:'行程50mm / 最大载荷200N',cat:'A类',p1:265,p2:220,p3:185,moq:1,stock:'in'},
+  {id:'P006',name:'电磁阀组件',spec:'DC24V / G1/4接口',cat:'B类',p1:380,p2:310,p3:260,moq:1,stock:'in'},
+  {id:'P007',name:'压力传感器',spec:'0~10bar / 4-20mA输出',cat:'B类',p1:520,p2:440,p3:380,moq:1,stock:'in'},
+  {id:'P008',name:'温度控制模块',spec:'PT100输入 / 继电器输出',cat:'B类',p1:185,p2:150,p3:128,moq:5,stock:'low'},
+  {id:'P009',name:'工业以太网交换机',spec:'8口 / 导轨安装',cat:'B类',p1:680,p2:580,p3:500,moq:1,stock:'in'},
+  {id:'P010',name:'伺服驱动器',spec:'750W / Modbus通讯',cat:'B类',p1:1280,p2:1100,p3:980,moq:1,stock:'out'},
+  {id:'P011',name:'铸铁底座',spec:'300×300mm / 灰铸铁HT200',cat:'C类',p1:220,p2:180,p3:150,moq:1,stock:'in'},
+  {id:'P012',name:'铝型材框架',spec:'40×40 / 6米/根',cat:'C类',p1:95,p2:75,p3:60,moq:5,stock:'in'},
+  {id:'P013',name:'钢制连接板',spec:'200×100×8mm / Q235',cat:'C类',p1:35,p2:25,p3:18,moq:10,stock:'in'},
+  {id:'P014',name:'减速机',spec:'速比1:20 / 法兰输出',cat:'C类',p1:760,p2:650,p3:570,moq:1,stock:'low'},
+  {id:'P015',name:'防水接线盒',spec:'IP67 / 200×150×75mm',cat:'C类',p1:48,p2:36,p3:28,moq:10,stock:'in'},
+  {id:'P016',name:'PLC控制模块',spec:'16DI/16DO / 以太网',cat:'D类',p1:2200,p2:1950,p3:1750,moq:1,stock:'in'},
+  {id:'P017',name:'触摸屏人机界面',spec:'7寸 / 分辨率800×480',cat:'D类',p1:1580,p2:1380,p3:1200,moq:1,stock:'in'},
+  {id:'P018',name:'变频器',spec:'2.2kW / 三相380V',cat:'D类',p1:880,p2:760,p3:660,moq:1,stock:'in'},
+  {id:'P019',name:'工业相机',spec:'500万像素 / GigE接口',cat:'D类',p1:3200,p2:2800,p3:2500,moq:1,stock:'low'},
+  {id:'P020',name:'激光位移传感器',spec:'量程200mm / ±0.1mm精度',cat:'D类',p1:1850,p2:1600,p3:1400,moq:1,stock:'in'},
+  {id:'P021',name:'气动手指气缸',spec:'HFZ-16 / 双作用',cat:'A类',p1:168,p2:135,p3:110,moq:2,stock:'in'},
+  {id:'P022',name:'直线导轨滑块',spec:'HGH20CA / 精密级',cat:'A类',p1:95,p2:78,p3:62,moq:4,stock:'in'},
+  {id:'P023',name:'同步带轮组',spec:'HTD 5M-30T / 铝合金',cat:'A类',p1:55,p2:42,p3:35,moq:5,stock:'in'},
+  {id:'P024',name:'工业摄像头支架',spec:'碳钢镀锌 / 可调节',cat:'C类',p1:120,p2:95,p3:78,moq:1,stock:'out'},
+];
+
+const stockLabel={in:'现货',low:'少量',out:'缺货'};
+const stockDot={in:'dot-in',low:'dot-low',out:'dot-out'};
+const tagClass={'A类':'tag-A','B类':'tag-B','C类':'tag-C','D类':'tag-D'};
+
+let currentCat='全部', currentSort='default', currentSearch='';
+document.getElementById('stat-total').textContent=products.length;
+
+function fmt(n){return '¥'+n.toLocaleString('zh-CN')}
+
+function getFiltered(){
+  let list=[...products];
+  if(currentCat!=='全部') list=list.filter(p=>p.cat===currentCat);
+  if(currentSearch){
+    const q=currentSearch.toLowerCase();
+    list=list.filter(p=>p.name.toLowerCase().includes(q)||p.id.toLowerCase().includes(q)||p.spec.toLowerCase().includes(q));
+  }
+  if(currentSort==='price-asc') list.sort((a,b)=>a.p1-b.p1);
+  else if(currentSort==='price-desc') list.sort((a,b)=>b.p1-a.p1);
+  else if(currentSort==='name') list.sort((a,b)=>a.name.localeCompare(b.name,'zh'));
+  return list;
+}
+
+function render(){
+  const list=getFiltered();
+  const tbody=document.getElementById('tbody');
+  const empty=document.getElementById('empty');
+  document.getElementById('result-count').textContent='共 '+list.length+' 项';
+  if(!list.length){tbody.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  tbody.innerHTML=list.map((p,i)=>`
+    <tr>
+      <td>${i+1}</td>
+      <td class="td-name">${p.name}<small>${p.id} · ${p.spec}</small></td>
+      <td><span class="tag ${tagClass[p.cat]||''}">${p.cat}</span></td>
+      <td><span class="price">${fmt(p.p1)}</span><br><span class="price-note">1-9件</span></td>
+      <td><span class="price">${fmt(p.p2)}</span><br><span class="price-note">10-49件</span></td>
+      <td><span class="price">${fmt(p.p3)}</span><br><span class="price-note">50件+</span></td>
+      <td class="moq">${p.moq} 件起</td>
+      <td><span class="stock"><span class="dot ${stockDot[p.stock]}"></span>${stockLabel[p.stock]}</span></td>
+      <td><button class="btn-quote" onclick="requestQuote('${p.id}','${p.name}')">询价</button></td>
+    </tr>
+  `).join('');
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+function requestQuote(id,name){
+  showToast('✓ 已记录 '+name+' 的询价请求');
+}
+
+document.getElementById('search').addEventListener('input',function(){
+  currentSearch=this.value.trim();render();
+});
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    this.classList.add('active');
+    currentCat=this.dataset.cat;render();
+  });
+});
+document.getElementById('sort-select').addEventListener('change',function(){
+  currentSort=this.value;render();
+});
+render();
+</script>
+</body>
+</html>
